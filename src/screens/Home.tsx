@@ -28,6 +28,8 @@ export default function HomeScreen(props: HomeScreenProps) {
 
   useEffect(() => {
     async function init() {
+      await Repositories.menu.init();
+
       let _items = await Repositories.menu.all();
 
       if (_items.length === 0) {

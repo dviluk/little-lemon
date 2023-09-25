@@ -12,6 +12,7 @@ import HomeScreen from "./screens/Home";
 
 import Toolbar from "./components/Toolbar";
 import { CurrentUserContext } from "./context/user";
+import "./services/database";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 

@@ -63,8 +63,6 @@ const menu = {
   },
 };
 
-menu.init();
-
 export const Repositories = {
   menu,
 };
