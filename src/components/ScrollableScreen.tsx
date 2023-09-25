@@ -10,6 +10,7 @@ export default function ScrollableScreenComponent(props: Props) {
   return (
     <SafeAreaView style={style.container}>
       <ScrollView
+        keyboardShouldPersistTaps="handled"
         style={[style.container, style.scrollView, padding && style.padding]}
         contentContainerStyle={[padding && style.paddingContentContainer]}
       >

@@ -4,13 +4,15 @@ import { Pressable, View, Image } from "react-native";
 import Logo from "../assets/Logo.png";
 import DefaultProfilePicture from "../assets/profile.png";
 import { CurrentUserContext } from "../context/user";
+import Button from "./Button";
 
 type Props = {
   navigation: any;
   route: any;
+  back?: { title: string };
 };
 export default function Toolbar(props: Props) {
-  const { navigation, route } = props;
+  const { navigation, route, back } = props;
 
   const { user } = useContext(CurrentUserContext);
 
@@ -20,8 +22,27 @@ export default function Toolbar(props: Props) {
         alignItems: "center",
         height: 64,
         flexDirection: "row",
+        paddingLeft: 22,
       }}
     >
+      {back && (
+        <View
+          style={{
+            position: "absolute",
+            left: 22,
+            height: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Button
+            title="< Back"
+            onPress={() => {
+              navigation.pop();
+            }}
+          />
+        </View>
+      )}
       <View
         style={{
           flex: 1,
@@ -29,12 +50,16 @@ export default function Toolbar(props: Props) {
           justifyContent: "center",
         }}
       >
-        <Image source={Logo} style={{ marginLeft: user ? 58 : 0 }} />
+        <Image source={Logo} style={{ marginRight: user ? 26 : 0 }} />
       </View>
       {user && (
         <View
           style={{
-            paddingRight: 16,
+            position: "absolute",
+            right: 22,
+            height: "100%",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
           <Pressable

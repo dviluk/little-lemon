@@ -13,6 +13,7 @@ import HomeScreen from "./screens/Home";
 import Toolbar from "./components/Toolbar";
 import { CurrentUserContext } from "./context/user";
 import "./services/database";
+import { Colors } from "./assets/colors";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -45,6 +46,7 @@ export default function App() {
             header: (props) => {
               return <Toolbar {...props} />;
             },
+            headerTintColor: "red",
           }}
         >
           <Stack.Screen name="onboarding" component={OnboardingScreen} />

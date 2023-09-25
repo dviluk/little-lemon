@@ -9,13 +9,20 @@ type Props = {
   onChange?: (value: string, rawValue?: string) => void;
   mask?: string;
   placeholder?: string;
+  required?: boolean;
 };
 export default function TextInputComponent(props: Props) {
-  const { label, initialValue, error, onChange, mask, placeholder } = props;
+  const { label, initialValue, error, onChange, mask, placeholder, required } =
+    props;
 
   return (
     <View style={style.container}>
-      {label && <Text>{label}</Text>}
+      {label && (
+        <Text>
+          {label}
+          {required && <Text style={{ color: "red" }}>*</Text>}
+        </Text>
+      )}
       {mask ? (
         <MaskedTextInput
           mask={mask}

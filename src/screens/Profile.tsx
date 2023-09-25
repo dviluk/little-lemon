@@ -95,8 +95,8 @@ function Form(props: FormProps) {
     setValue("profile_picture", undefined);
   }
 
-  function onSubmit() {
-    currentUser(values);
+  async function onSubmit() {
+    await currentUser(values);
     userActions.setUser(values);
     navigation.pop();
   }
@@ -108,6 +108,7 @@ function Form(props: FormProps) {
   function onLogout() {
     logout();
     userActions.setUser(undefined);
+    navigation.popToTop();
     navigation.replace("onboarding");
   }
 
@@ -132,6 +133,7 @@ function Form(props: FormProps) {
           initialValue={values.name}
           error={errors["name"]}
           onChange={handleInput("name")}
+          required
         />
         <TextInputComponent
           label="Last name"
@@ -144,6 +146,7 @@ function Form(props: FormProps) {
           initialValue={values.email}
           error={errors["email"]}
           onChange={handleInput("email")}
+          required
         />
         <TextInputComponent
           label="Phone number"

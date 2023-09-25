@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Image, FlatList, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  FlatList,
+  ScrollView,
+  LogBox,
+  Dimensions,
+} from "react-native";
 import { ScreenProps } from "../types";
 import Title from "../components/Title";
 import { Colors } from "../assets/colors";
@@ -12,7 +20,9 @@ import { Repositories } from "../services/database";
 import { delay, useForm } from "../utils";
 import TextInputComponent from "../components/TextInput";
 import LoadingScreen from "../components/LoadingScreen";
-import Screen from "../components/Screen";
+import ScrollableScreenComponent from "../components/ScrollableScreen";
+
+const HEIGHT = Dimensions.get("window").height;
 
 type HomeScreenProps = ScreenProps["onboarding"];
 
@@ -52,6 +62,8 @@ export default function HomeScreen(props: HomeScreenProps) {
     }
 
     init();
+
+    LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
   }, []);
 
   async function queryItems() {
@@ -89,7 +101,7 @@ export default function HomeScreen(props: HomeScreenProps) {
   }
 
   return (
-    <Screen padding={false}>
+    <ScrollableScreenComponent padding={false}>
       <View
         style={{
           backgroundColor: Colors.primary,
@@ -146,26 +158,28 @@ export default function HomeScreen(props: HomeScreenProps) {
           ))}
         </ScrollView>
       </View>
-      {status === "LOADING" ? (
-        <LoadingScreen />
-      ) : (
-        <FlatList
-          data={items}
-          ListEmptyComponent={() => {
-            return (
-              <View style={{ marginTop: 30, alignItems: "center" }}>
-                <Text>No results</Text>
-              </View>
-            );
-          }}
-          renderItem={({ item }) => (
-            <ListItem
-              {...item}
-              image={`https://github.com/Meta-Mobile-Developer-PC/Working-With-Data-API/blob/main/images/${item.image}?raw=true`}
-            />
-          )}
-        />
-      )}
-    </Screen>
+      <View style={{ minHeight: HEIGHT }}>
+        {status === "LOADING" ? (
+          <LoadingScreen />
+        ) : (
+          <FlatList
+            data={items}
+            ListEmptyComponent={() => {
+              return (
+                <View style={{ marginTop: 30, alignItems: "center" }}>
+                  <Text>No results</Text>
+                </View>
+              );
+            }}
+            renderItem={({ item }) => (
+              <ListItem
+                {...item}
+                image={`https://github.com/Meta-Mobile-Developer-PC/Working-With-Data-API/blob/main/images/${item.image}?raw=true`}
+              />
+            )}
+          />
+        )}
+      </View>
+    </ScrollableScreenComponent>
   );
 }

@@ -1,14 +1,14 @@
 import React, { useContext, useRef } from "react";
-import { Image, StyleSheet, Text, TextInput, View } from "react-native";
+import { StyleSheet, Text, TextInput, View } from "react-native";
 
 import Button from "../components/Button";
 
-import Logo from "../assets/Logo.png";
 import { currentUser } from "../services/storage";
 import { ScreenProps } from "../types";
 import ScrollableScreenComponent from "../components/ScrollableScreen";
 import { useForm } from "../utils";
 import { CurrentUserContext } from "../context/user";
+import { Colors } from "../assets/colors";
 
 type OnboardingScreenProps = ScreenProps["onboarding"];
 
@@ -26,12 +26,12 @@ export default function OnboardingScreen(props: OnboardingScreenProps) {
 
   const emailRef = useRef<TextInput>(null);
 
-  function onSubmit() {
+  async function onSubmit() {
     if (hasErrors) {
       return;
     }
 
-    currentUser(values);
+    await currentUser(values);
     userActions.setUser(values);
 
     navigation.replace("home");
@@ -48,7 +48,9 @@ export default function OnboardingScreen(props: OnboardingScreenProps) {
       <View style={style.body}>
         <Text style={style.label}>Let us get to know you</Text>
 
-        <Text style={style.label}>First Name</Text>
+        <Text style={style.label}>
+          First Name<Text style={{ color: "red" }}>*</Text>
+        </Text>
         <TextInput
           keyboardType="default"
           value={values.name}
@@ -59,7 +61,9 @@ export default function OnboardingScreen(props: OnboardingScreenProps) {
           }}
         />
         {errors.name && <Text style={style.textDanger}>{errors.name}</Text>}
-        <Text style={style.label}>Email</Text>
+        <Text style={style.label}>
+          Email<Text style={{ color: "red" }}>*</Text>
+        </Text>
         <TextInput
           ref={emailRef}
           keyboardType="email-address"
@@ -71,7 +75,12 @@ export default function OnboardingScreen(props: OnboardingScreenProps) {
         {errors.email && <Text style={style.textDanger}>{errors.email}</Text>}
       </View>
       <View style={style.footer}>
-        <Button title="Submit" disabled={hasErrors} onPress={onSubmit} />
+        <Button
+          title="Submit"
+          theme="primary-alt"
+          disabled={hasErrors}
+          onPress={onSubmit}
+        />
       </View>
     </ScrollableScreenComponent>
   );
@@ -81,7 +90,7 @@ const style = StyleSheet.create({
   body: {
     flex: 1,
     padding: 24,
-    backgroundColor: "#ccc",
+    backgroundColor: Colors.primary,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -99,10 +108,12 @@ const style = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#111",
     backgroundColor: "#fff",
+    borderRadius: 8,
   },
   label: {
     fontSize: 22,
     marginVertical: 16,
+    color: Colors.light,
   },
   button: {
     padding: 16,

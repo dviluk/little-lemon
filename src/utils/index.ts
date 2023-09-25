@@ -81,7 +81,7 @@ export function useForm<Form extends Record<string, any>>(
   const [errors, setErrors] = useState<Partial<ErrorType<Form>>>(
     defaultErrors || {}
   );
-  const [values, setValues] = useState(defaultValues);
+  const [values, setValues] = useState<Form>(defaultValues as Form);
   const [hasErrors, setHasErrors] = useState(
     validateRules(rules, values) !== undefined
   );
