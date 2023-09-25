@@ -1,5 +1,5 @@
 import React from "react";
-import { SafeAreaView, ScrollView, StyleSheet } from "react-native";
+import { ScrollView, StyleSheet, SafeAreaView } from "react-native";
 
 type Props = {
   children: React.ReactNode;
@@ -22,6 +22,7 @@ export default function ScrollableScreenComponent(props: Props) {
 const style = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#fff",
   },
   padding: {
     paddingHorizontal: 22,

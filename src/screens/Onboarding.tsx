@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useContext, useRef } from "react";
 import { Image, StyleSheet, Text, TextInput, View } from "react-native";
 
 import Button from "../components/Button";
@@ -8,12 +8,14 @@ import { currentUser } from "../services/storage";
 import { ScreenProps } from "../types";
 import ScrollableScreenComponent from "../components/ScrollableScreen";
 import { useForm } from "../utils";
+import { CurrentUserContext } from "../context/user";
 
 type OnboardingScreenProps = ScreenProps["onboarding"];
 
 export default function OnboardingScreen(props: OnboardingScreenProps) {
   const { navigation } = props;
 
+  const { actions: userActions } = useContext(CurrentUserContext);
   const { values, errors, setValue, hasErrors } = useForm<CurrentUser>({
     defaultValues: { name: "", email: "" },
     rules: {
@@ -30,7 +32,9 @@ export default function OnboardingScreen(props: OnboardingScreenProps) {
     }
 
     currentUser(values);
-    navigation.replace("profile");
+    userActions.setUser(values);
+
+    navigation.replace("home");
   }
 
   function handleInput(input: keyof CurrentUser) {
@@ -41,9 +45,6 @@ export default function OnboardingScreen(props: OnboardingScreenProps) {
 
   return (
     <ScrollableScreenComponent padding={false}>
-      <View style={style.header}>
-        <Image source={Logo} />
-      </View>
       <View style={style.body}>
         <Text style={style.label}>Let us get to know you</Text>
 
@@ -77,11 +78,6 @@ export default function OnboardingScreen(props: OnboardingScreenProps) {
 }
 
 const style = StyleSheet.create({
-  header: {
-    alignItems: "center",
-    paddingVertical: 16,
-    backgroundColor: "#eee",
-  },
   body: {
     flex: 1,
     padding: 24,

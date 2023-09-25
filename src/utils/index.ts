@@ -1,14 +1,14 @@
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from "react";
 
 type ErrorType<T> = {
   [k in keyof T]: string;
 };
 
 type Rule =
-  | {required: boolean}
-  | {email: boolean}
-  | {onlyLetters: boolean}
-  | {validator: (value: any, values: any) => string | undefined};
+  | { required: boolean }
+  | { email: boolean }
+  | { onlyLetters: boolean }
+  | { validator: (value: any, values: any) => string | undefined };
 
 function validateRules(rules: any, values: any) {
   const inputs = Object.keys(values);
@@ -24,22 +24,22 @@ function validateRules(rules: any, values: any) {
       const rule = inputRules[i] as any;
 
       if (rule.required) {
-        if (!inputValue === undefined || inputValue === '') {
-          errors[input] = 'Is Required';
+        if (!inputValue === undefined || inputValue === "") {
+          errors[input] = "Is Required";
           break;
         }
       }
 
       if (rule.email) {
         if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(inputValue)) {
-          errors[input] = 'Email not valid';
+          errors[input] = "Email not valid";
           break;
         }
       }
 
       if (rule.onlyLetters) {
         if (!/^[a-zA-Z\s]*$/.test(inputValue)) {
-          errors[input] = 'Not valid';
+          errors[input] = "Not valid";
           break;
         }
       }
@@ -67,21 +67,23 @@ function validateRules(rules: any, values: any) {
  * @param config
  * @returns
  */
-export function useForm<Form extends Record<string, any>>(config: {
-  defaultValues: Form;
-  rules?: Partial<{
-    [k in keyof Form]: Rule[];
-  }>;
-  defaultErrors?: ErrorType<Form>;
-}) {
-  const {defaultValues, rules = {}, defaultErrors} = config;
+export function useForm<Form extends Record<string, any>>(
+  config: {
+    defaultValues?: Form;
+    rules?: Partial<{
+      [k in keyof Form]: Rule[];
+    }>;
+    defaultErrors?: ErrorType<Form>;
+  } = {}
+) {
+  const { defaultValues = {}, rules = {}, defaultErrors } = config;
 
   const [errors, setErrors] = useState<Partial<ErrorType<Form>>>(
-    defaultErrors || {},
+    defaultErrors || {}
   );
   const [values, setValues] = useState(defaultValues);
   const [hasErrors, setHasErrors] = useState(
-    validateRules(rules, values) !== undefined,
+    validateRules(rules, values) !== undefined
   );
 
   useEffect(() => {
@@ -91,21 +93,21 @@ export function useForm<Form extends Record<string, any>>(config: {
 
   function setValue<Input extends keyof Form = keyof Form>(
     input: Input,
-    value?: Form[Input],
+    value?: Form[Input]
   ) {
-    setValues({...values, [input as string]: value});
+    setValues({ ...values, [input as string]: value });
 
     // @ts-ignore
     const inputRules = rules[input];
 
     if (inputRules) {
       // reset input errors
-      const newErrors = {...errors};
+      const newErrors = { ...errors };
       delete newErrors[input];
 
       setErrors({
         ...newErrors,
-        ...validateRules(rules, {[input]: value}),
+        ...validateRules(rules, { [input]: value }),
       });
     }
   }
@@ -115,5 +117,24 @@ export function useForm<Form extends Record<string, any>>(config: {
     values,
     setValue,
     hasErrors,
+  };
+}
+
+export function delay(cb: any, t: number) {
+  let timer: NodeJS.Timeout | undefined;
+
+  return function () {
+    const args = arguments;
+
+    clearTimeout(timer);
+
+    if (args[0] && args[0].persist) {
+      args[0].persist();
+    }
+
+    timer = setTimeout(() => {
+      // @ts-ignore
+      cb.apply(this, args);
+    }, t || 0);
   };
 }

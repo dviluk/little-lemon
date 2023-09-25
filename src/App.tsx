@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Image, Pressable, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { currentUser } from "./services/storage";
@@ -7,18 +8,22 @@ import OnboardingScreen from "./screens/Onboarding";
 import ProfileScreen from "./screens/Profile";
 import { RootStackParamList } from "./types";
 import LoadingScreen from "./components/LoadingScreen";
+import HomeScreen from "./screens/Home";
+
+import Toolbar from "./components/Toolbar";
+import { CurrentUserContext } from "./context/user";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
-  const [isOnboardingCompleted, setIs] = useState(false);
+  const [user, setUser] = useState<CurrentUser>(undefined);
   const [status, setStatus] = useState<"LOADING" | "IDLE">("LOADING");
 
   useEffect(() => {
     async function init() {
-      const user = await currentUser();
+      const _user = await currentUser();
 
-      setIs(user !== undefined);
+      setUser(_user);
 
       setStatus("IDLE");
     }
@@ -31,17 +36,21 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName={isOnboardingCompleted ? "profile" : "onboarding"}
-      >
-        <Stack.Screen
-          name="onboarding"
-          component={OnboardingScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen name="profile" component={ProfileScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <CurrentUserContext.Provider value={{ user, actions: { setUser } }}>
+      <NavigationContainer>
+        <Stack.Navigator
+          initialRouteName={user ? "home" : "onboarding"}
+          screenOptions={{
+            header: (props) => {
+              return <Toolbar {...props} />;
+            },
+          }}
+        >
+          <Stack.Screen name="onboarding" component={OnboardingScreen} />
+          <Stack.Screen name="home" component={HomeScreen} />
+          <Stack.Screen name="profile" component={ProfileScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </CurrentUserContext.Provider>
   );
 }

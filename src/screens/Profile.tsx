@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import Button from "../components/Button";
@@ -11,6 +11,7 @@ import LoadingScreen from "../components/LoadingScreen";
 import Subtitle from "../components/Subtitle";
 import Checkbox from "../components/Checkbox";
 import defaultProfileImg from "../assets/profile.png";
+import { CurrentUserContext } from "../context/user";
 
 type ProfileScreenProps = ScreenProps["profile"];
 
@@ -48,6 +49,8 @@ type FormProps = {
 function Form(props: FormProps) {
   const { navigation, defaultValues } = props;
 
+  const { actions: userActions } = useContext(CurrentUserContext);
+
   const { values, errors, setValue, hasErrors } = useForm<CurrentUser>({
     defaultValues,
     rules: {
@@ -73,6 +76,7 @@ function Form(props: FormProps) {
       setValue(input, text);
     };
   }
+
   async function pickImage() {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -93,10 +97,18 @@ function Form(props: FormProps) {
 
   function onSubmit() {
     currentUser(values);
+    userActions.setUser(values);
+    navigation.pop();
   }
 
   function onDiscard() {
     navigation.pop();
+  }
+
+  function onLogout() {
+    logout();
+    userActions.setUser(undefined);
+    navigation.replace("onboarding");
   }
 
   return (
@@ -166,14 +178,7 @@ function Form(props: FormProps) {
       </View>
       <View style={{ marginTop: 32 }}>
         <View>
-          <Button
-            title="Logout"
-            theme="primary-alt"
-            onPress={() => {
-              logout();
-              navigation.replace("onboarding");
-            }}
-          />
+          <Button title="Logout" theme="primary-alt" onPress={onLogout} />
         </View>
         <View
           style={{

@@ -11,3 +11,11 @@ type CurrentUser = {
   check_special_offers?: boolean;
   check_newsletter?: boolean;
 };
+
+type MenuItem = {
+  name: string;
+  category: string;
+  price: number;
+  description: string;
+  image: string;
+};

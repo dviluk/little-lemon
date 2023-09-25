@@ -1,12 +1,45 @@
 import React from "react";
 import { StyleSheet, Text } from "react-native";
+import { Colors } from "../assets/colors";
 
-type Props = { children: React.ReactNode };
+type Props = {
+  children: React.ReactNode;
+  theme?: "light" | "dark";
+  serif?: boolean;
+  size?: "small" | "large";
+};
 
 export default function Subtitle(props: Props) {
-  return <Text style={style.text}>{props.children}</Text>;
+  const { theme, serif, size = "small" } = props;
+  return (
+    <Text
+      style={[
+        style.text,
+        style[`text-${theme}`],
+        style[`text-${size}`],
+        serif && style.serif,
+      ]}
+    >
+      {props.children}
+    </Text>
+  );
 }
 
 const style = StyleSheet.create({
-  text: { fontSize: 18, marginVertical: 8 },
+  text: { fontSize: 24, marginVertical: 8, fontWeight: "bold" },
+  ["text-light"]: {
+    color: Colors.light,
+  },
+  ["text-dark"]: {
+    color: Colors.dark,
+  },
+  serif: {
+    fontFamily: "serif",
+  },
+  ["text-small"]: {
+    fontSize: 18,
+  },
+  ["text-large"]: {
+    fontSize: 24,
+  },
 });
